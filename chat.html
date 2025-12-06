@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIZARYON - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body { background-color: #111827; color: #f3f4f6; }
+        .red-bg { background-color: #dc2626; }
+        .dark-gray-bg { background-color: #1f2937; }
+        .red-text { color: #dc2626; }
+        .chat-bubble { border-radius: 20px; max-width: 80%; }
+        .user-bubble { background-color: #dc2626; color: white; margin-left: auto; }
+        .ai-bubble { background-color: #374151; color: white; margin-right: auto; }
+        .chat-container { height: calc(100vh - 260px); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            
+            <div class="flex items-center space-x-4">
+                <i data-feather="message-square" class="red-text"></i>
+                <span class="text-xl font-bold text-white">VIZARYON</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='settings.html'" class="text-gray-300 hover:text-white">
+                    <i data-feather="settings"></i>
+                </button>
+                <button onclick="logout()" class="text-gray-300 hover:text-white">
+                    <i data-feather="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="container mx-auto px-6 py-4">
+        <div class="chat-container overflow-y-auto mb-4">
+            <div class="flex flex-col space-y-4" id="chatContent"></div>
+        </div>
+
+        <!-- Input -->
+        <div class="dark-gray-bg rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <input id="messageInput" type="text" placeholder="Type your message here..."
+                class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                <button id="sendBtn" class="red-bg ml-4 p-3 rounded-lg hover:bg-red-700 transition">
+                    <i data-feather="send" class="text-white"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Disclaimer Text -->
+        <p class="text-center text-gray-400 text-sm mt-2">
+            VIZARYON ai may produce inaccurate information.
+        </p>
+
+    </div>
+
+<script type="module">
+feather.replace();
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { 
+    getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+  authDomain: "vizaryon-301bd.firebaseapp.com",
+  projectId: "vizaryon-301bd",
+  storageBucket: "vizaryon-301bd.firebasestorage.app",
+  messagingSenderId: "748332923160",
+  appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const API_URL = "https://api.openai.com/v1/chat/completions";
+const API_KEY = "⚠️ Replace with your API key ⚠️";
+const MODEL = "gpt-4o-mini";
+
+const sendBtn = document.getElementById("sendBtn");
+const input = document.getElementById("messageInput");
+const chatContent = document.getElementById("chatContent");
+
+// Send message
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keydown", e => { if(e.key === "Enter") sendMessage(); });
+
+async function sendMessage() {
+    const message = input.value.trim();
+    if (!message) return;
+
+    input.value = "";
+    await saveMessage("user", message);
+
+    const reply = await getAIResponse(message);
+    await saveMessage("ai", reply);
+}
+
+async function saveMessage(type, text) {
+    await addDoc(collection(db, "messages"), {
+        type,
+        text,
+        timestamp: serverTimestamp()
+    });
+}
+
+function displayMessage(type, text) {
+    const bubble = document.createElement("div");
+    bubble.className = `${type === "user" ? "user-bubble" : "ai-bubble"} chat-bubble p-4 w-3/4`;
+    bubble.innerHTML = type === "ai" 
+        ? `<div class="flex items-center mb-2"><div class="red-bg p-2 rounded-full mr-2"><i data-feather="cpu" class="text-white"></i></div><span class="font-bold">VIZARYON ai</span></div><p>${text}</p>`
+        : `<p>${text}</p>`;
+    
+    chatContent.appendChild(bubble);
+    feather.replace();
+    scrollChat();
+}
+
+async function getAIResponse(msg) {
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({ 
+                model: MODEL, 
+                messages: [{ role: "user", content: msg }]
+            })
+        });
+
+        const json = await res.json();
+        return json.choices?.[0]?.message?.content || "⚠️ AI error.";
+        
+    } catch {
+        return "⚠️ Network error.";
+    }
+}
+
+function scrollChat() {
+    const container = document.querySelector(".chat-container");
+    container.scrollTop = container.scrollHeight;
+}
+
+// Load messages realtime
+const q = query(collection(db, "messages"), orderBy("timestamp"));
+onSnapshot(q, snapshot => {
+    chatContent.innerHTML = "";
+    snapshot.forEach(doc => displayMessage(doc.data().type, doc.data().text));
+});
+
+// Logout placeholder
+function logout() {
+    alert("Logout system coming soon.");
+}
+</script>
+</body>
+</html>
