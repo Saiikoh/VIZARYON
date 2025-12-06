@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+<style>
+    body { background-color: #111827; color: #f3f4f6; }
+
+    .section { background:#1f2937; padding:18px; border-radius:14px; }
+
+    .row { padding:14px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #2d3748; }
+    .row:last-child { border-bottom:none; }
+
+    .toggle { width:48px; height:24px; background:#374151; border-radius:24px; position:relative; cursor:pointer; transition:0.3s; }
+    .toggle.active { background:#dc2626; }
+    .toggle::after {
+        content:""; width:20px; height:20px; background:white; border-radius:50%;
+        position:absolute; top:2px; left:2px; transition:0.3s;
+    }
+    .toggle.active::after { transform:translateX(24px); }
+
+    .toast {
+        position: fixed;
+        bottom: 35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #1f2937;
+        border: 1px solid #10b981;
+        color: #10b981;
+        padding: 12px 20px;
+        border-radius: 8px;
+        display: none;
+        z-index: 50;
+    }
+</style>
+</head>
+
+<body class="min-h-screen px-6">
+
+    <div id="toast" class="toast"></div>
+
+<nav class="fixed top-0 left-0 w-full px-6 py-4 shadow-md flex justify-between items-center bg-[#1f2937] z-50">
+    <div class="flex items-center space-x-3">
+        <i data-feather="bell" class="text-red-500"></i>
+        <span class="text-xl font-bold">Notifications</span>
+    </div>
+
+    <button onclick="window.location.href='settings.html'" 
+        class="border border-red-600 text-red-400 px-5 py-2 rounded-lg hover:bg-red-900 transition">
+        Back
+    </button>
+</nav>
+
+<section class="container mx-auto pt-28 pb-16">
+    <div class="section">
+        <h2 class="text-lg font-semibold mb-3">Receive Updates</h2>
+
+        <div class="row">
+            <span>Enable Notifications</span>
+            <div id="notifyToggle" class="toggle"></div>
+        </div>
+
+        <p class="text-gray-400 text-sm mt-2">
+            Allow push updates such as announcements and system messages at your registered email.
+        </p>
+    </div>
+</section>
+
+<script>
+feather.replace();
+
+// Load saved notification state
+window.onload = () => {
+    const state = localStorage.getItem("notifications");
+    const toggle = document.getElementById("notifyToggle");
+
+    if(state === "true") toggle.classList.add("active");
+
+    toggle.addEventListener("click", () => {
+        toggle.classList.toggle("active");
+        const enabled = toggle.classList.contains("active");
+        localStorage.setItem("notifications", enabled);
+        showToast(enabled ? "Notifications Enabled" : "Notifications Disabled");
+    });
+};
+
+function showToast(message){
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 2000);
+}
+</script>
+
+</body>
+</html>
