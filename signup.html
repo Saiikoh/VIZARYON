@@ -44,25 +44,25 @@
 
             <form id="registerForm">
                 <div class="mb-4">
-                    <label for="name" class="block text-gray-300 mb-2">Full Name</label>
+                    <label class="block text-gray-300 mb-2">Full Name</label>
                     <input id="name" type="text" required placeholder="John Doe"
                         class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
                 </div>
 
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-300 mb-2">Email Address</label>
+                    <label class="block text-gray-300 mb-2">Email Address</label>
                     <input id="email" type="email" required placeholder="your@email.com"
                         class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="block text-gray-300 mb-2">Password</label>
+                    <label class="block text-gray-300 mb-2">Password</label>
                     <input id="password" type="password" required placeholder="••••••••"
                         class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
                 </div>
 
                 <div class="mb-6">
-                    <label for="confirm-password" class="block text-gray-300 mb-2">Confirm Password</label>
+                    <label class="block text-gray-300 mb-2">Confirm Password</label>
                     <input id="confirm-password" type="password" required placeholder="••••••••"
                         class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
                 </div>
@@ -80,7 +80,7 @@
         </div>
     </section>
 
-    <!-- FIREBASE -->
+<!-- FIREBASE -->
 <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -123,15 +123,21 @@
         try {
             const userData = await createUserWithEmailAndPassword(auth, email, password);
 
+            // Store user data in Firestore
             await setDoc(doc(db, "users", userData.user.uid), {
                 name: name,
                 email: email
             });
 
-            window.location.href = "login.html";
+            // Redirect to homepage
+            window.location.href = "homepage.html";
 
         } catch (error) {
-            showError(error.message);
+            let msg = "Signup failed!";
+            if (error.code === "auth/email-already-in-use") msg = "Email already exists!";
+            if (error.code === "auth/invalid-email") msg = "Invalid email format!";
+            if (error.code === "auth/weak-password") msg = "Password should be at least 6 characters!";
+            showError(msg);
         }
 
         btn.textContent = "Create Account";
