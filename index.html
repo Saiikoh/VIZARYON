@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIZARYON - Welcome Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        .red-bg { background-color: #dc2626; }
+        .dark-gray-bg { background-color: #1f2937; }
+        .red-text { color: #dc2626; }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- NAVIGATION -->
+<nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <i data-feather="message-square" class="red-text"></i>
+            <span class="text-xl font-bold">VIZARYON</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="homepage.html" class="text-gray-300 hover:text-white">Home</a>
+            <a href="#features" class="text-gray-300 hover:text-white">Features</a>
+            <a href="#about" class="text-gray-300 hover:text-white">About Developer</a>
+            <a href="login.html" class="red-bg text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Login</a>
+            <a href="signup.html" class="border border-red-600 text-red-400 px-4 py-2 rounded-lg hover:bg-red-900 transition">Signup</a>
+        </div>
+
+        <button class="md:hidden text-white"><i data-feather="menu"></i></button>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="container mx-auto px-6 py-20 text-center">
+    <div data-aos="fade-up">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">Experience the Future with <span class="red-text">VIZARYON</span></h1>
+        <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
+            The most advanced AI chatbot platform designed to revolutionize your digital interactions.
+        </p>
+
+        <div class="flex flex-col md:flex-row justify-center gap-4">
+            <a href="#" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">Get Started</a>
+            <a href="#features" class="border border-red-600 text-red-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-900 transition">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="dark-gray-bg py-20">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16" data-aos="fade-up">
+            Why Choose <span class="red-text">VIZARYON</span> AI?
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="bg-gray-800 p-8 rounded-xl" data-aos="fade-up" data-aos-delay="100">
+                <div class="red-bg p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i data-feather="zap" class="text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Lightning Fast</h3>
+                <p class="text-gray-300">Instant responses with zero lag.</p>
+            </div>
+
+            <div class="bg-gray-800 p-8 rounded-xl" data-aos="fade-up" data-aos-delay="200">
+                <div class="red-bg p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i data-feather="cpu" class="text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Advanced Intelligence</h3>
+                <p class="text-gray-300">Understands context and nuance deeply.</p>
+            </div>
+
+            <div class="bg-gray-800 p-8 rounded-xl" data-aos="fade-up" data-aos-delay="300">
+                <div class="red-bg p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i data-feather="shield" class="text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Secure & Private</h3>
+                <p class="text-gray-300">Encrypted conversations. 100% safe.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT DEVELOPER -->
+<section id="about" class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center gap-10">
+            
+            <!-- Image -->
+            <div class="md:w-1/2" data-aos="fade-right">
+                <img src="http://static.photos/technology/640x360/42" alt="Developer" class="rounded-xl shadow-2xl">
+            </div>
+
+            <!-- Text -->
+            <div class="md:w-1/2" data-aos="fade-left">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">About The Developer</h2>
+
+                <p class="text-gray-300 mb-6">Saiikoh is a 13-year-old website & AI developer from India (Uttar Pradesh). Passionate about coding, technology, and AI.</p>
+
+                <p class="text-gray-300 mb-8">He has mastered multiple programming languages and frameworks already at a young age.</p>
+
+                <div class="flex flex-wrap gap-4">
+
+                    <!-- YOUTUBE -->
+                    <a href="https://youtube.com/@isaiikon?si=GkOaMdoerlrJ3cbL" 
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's YouTube
+                    </a>
+
+                    <!-- INSTAGRAM -->
+                    <a href="https://www.instagram.com/isaiikoh?igsh=MzNhZmtudzMxeGNx"
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's Instagram
+                    </a>
+
+                    <!-- EMAIL -->
+                    <a href="mailto:thesaiikoh@gmail.com"
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's Personal Email
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="dark-gray-bg py-20">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">Ready to Experience <span class="red-text">VIZARYON</span> AI?</h2>
+        <p class="text-xl text-gray-300 mb-10" data-aos="fade-up" data-aos-delay="100">Join thousands of users using VIZARYON AI.</p>
+
+        <div class="flex flex-col md:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+            <a href="signup.html" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">Create Free Account</a>
+            <a href="login.html" class="border border-red-600 text-red-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-900 transition">Login</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 py-12">
+    <div class="container mx-auto px-6">
+
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-6 md:mb-0">
+                <i data-feather="message-square" class="red-text"></i>
+                <span class="text-xl font-bold text-white">VIZARYON</span>
+            </div>
+
+            <div class="flex space-x-6">
+                <a href="https://www.instagram.com/vizaryon_dot_com?igsh=dG8wMjNsejFmY2pj" class="text-gray-400 hover:text-white"><i data-feather="instagram"></i></a>
+                <a href="https://youtube.com/@vizaryonai?si=W14IOTwn4n2U55tS" class="text-gray-400 hover:text-white"><i data-feather="youtube"></i></a>
+                <a href="mailto:vizaryonai@gmail.com" class="text-gray-400 hover:text-white"><i data-feather="mail"></i></a>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between">
+            <p class="text-gray-400">© 2025 VIZARYON AI – All rights reserved.</p>
+            <div class="flex space-x-6">
+                <a href="privacy_policy.html" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                <a href="terms_o_service.html" class="text-gray-400 hover:text-white">Terms of Service</a>
+                <a href="mailto:vizaryonai@gmail.com" class="text-gray-400 hover:text-white">Contact</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+<script>
+    AOS.init();
+    feather.replace();
+</script>
+
+</body>
+                  </html>
