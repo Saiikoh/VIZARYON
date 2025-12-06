@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIZARYON - Homepage</title>
+
+<script src="https://cdn.tailwindcss.com?v=3"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<style>
+body { background-color:#111827; color:#f3f4f6; }
+.red-bg { background:#dc2626; }
+.dark-bg { background:#1f2937; }
+.red-text { color:#dc2626; }
+svg { width:24px;height:24px; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="dark-bg shadow-lg sticky top-0 z-50 py-3">
+<div class="container mx-auto px-5 flex justify-between items-center">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+        <svg stroke="red" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="font-bold text-xl">VIZARYON</span>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex items-center gap-6">
+
+        <a href="#" class="hover:text-white text-gray-300">Home</a>
+        <a href="#features" class="hover:text-white text-gray-300">Features</a>
+        <a href="#about" class="hover:text-white text-gray-300">About</a>
+
+        <!-- Chat Button (Replaces Signup) -->
+        <a href="chat.html" class="red-bg text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Chat</a>
+
+        <!-- Profile Icon -->
+        <a href="settings.html">
+            <img src="https://i.postimg.cc/76bHkPbW/default-pfp.png"
+                class="w-10 h-10 rounded-full border border-red-500 cursor-pointer hover:scale-110 transition">
+        </a>
+    </div>
+
+    <!-- Mobile Button -->
+    <button class="md:hidden text-white">
+        <svg stroke="white" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+
+</div>
+</nav>
+</body>
+</html>
