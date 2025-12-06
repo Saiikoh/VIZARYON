@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Controls</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body { background-color: #111827; color: #f3f4f6; }
+        .section { background:#1f2937; padding:18px; border-radius:14px; }
+        .row { padding:14px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #2d3748; }
+        .row:last-child { border-bottom:none; }
+        .toggle { width:48px; height:24px; background:#374151; border-radius:24px; position:relative; cursor:pointer; transition:0.3s; }
+        .toggle.active { background:#dc2626; }
+        .toggle::after { content:""; width:20px; height:20px; background:white; border-radius:50%; position:absolute; top:2px; left:2px; transition:0.3s; }
+        .toggle.active::after { transform:translateX(24px); }
+        #toast { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); background-color: #1f2937; border: 1px solid #10b981; color: #10b981; padding: 12px 20px; border-radius: 8px; display: none; z-index: 50; }
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 50; }
+        .modal { background:#1f2937; padding:25px; width:90%; max-width:380px; border-radius:10px; text-align:center; }
+    </style>
+</head>
+
+<body class="min-h-screen px-6">
+
+<div id="toast"></div>
+
+<!-- MODAL -->
+<div id="clearHistoryModal" class="modal-bg">
+    <div class="modal">
+        <h2 class="text-xl font-bold mb-3 text-red-400">Clear Chat History?</h2>
+        <p class="text-gray-300 mb-6">This action cannot be undone.</p>
+
+        <div class="flex space-x-4">
+            <button onclick="closeModal()" class="flex-1 border border-gray-500 py-2 rounded-lg hover:bg-gray-700">Cancel</button>
+            <button onclick="confirmClear()" class="flex-1 bg-red-600 py-2 rounded-lg hover:bg-red-700">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 w-full px-6 py-4 shadow-md flex justify-between items-center bg-[#1f2937] z-50">
+    <div class="flex items-center space-x-3"><i data-feather="settings" class="text-red-500"></i><span class="text-xl font-bold">Data Controls</span></div>
+    <button onclick="window.location.href='settings.html'" class="border border-red-600 text-red-400 px-5 py-2 rounded-lg hover:bg-red-900 transition">Back</button>
+</nav>
+
+<section class="container mx-auto pt-28 pb-16">
+
+    <div class="section">
+        <h2 class="text-lg font-semibold mb-3">Improve the model</h2>
+        <div class="row"><span>Allow Training</span><div id="trainingToggle" class="toggle"></div></div>
+    </div>
+
+    <button onclick="exportData()" class="w-full bg-[#1f2937] px-4 py-4 rounded-lg mt-6 hover:bg-gray-700 transition">Export Data</button>
+
+    <div class="section mt-6">
+        <h2 class="text-lg font-semibold mb-3">Chat History</h2>
+
+        <div id="chatList" class="text-gray-400 text-sm mb-2"></div>
+
+        <div class="row text-red-400 cursor-pointer" onclick="showModal()">
+            <span>Clear chat history</span><i data-feather="trash-2"></i>
+        </div>
+    </div>
+
+</section>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+  authDomain: "vizaryon-301bd.firebaseapp.com",
+  projectId: "vizaryon-301bd",
+  storageBucket: "vizaryon-301bd.firebasestorage.app",
+  messagingSenderId: "748332923160",
+  appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth();
+
+let lastDeleted = [];
+
+// Toast
+function showToast(text){
+    let t=document.getElementById("toast");t.innerHTML=text;t.style.display="block";
+    setTimeout(()=>t.style.display="none",2500);
+}
+
+// Modal
+window.showModal=()=>document.getElementById("clearHistoryModal").style.display="flex";
+window.closeModal=()=>document.getElementById("clearHistoryModal").style.display="none";
+
+// Load Chat List
+async function loadChats(){
+    const user = auth.currentUser;
+    if(!user){document.getElementById("chatList").innerText="Login required.";return;}
+
+    const chatsRef = collection(db, "chat");
+    const q = query(chatsRef, where("userId", "==", user.uid));
+    const result = await getDocs(q);
+
+    if(result.empty){document.getElementById("chatList").innerText="No conversations found.";return;}
+
+    document.getElementById("chatList").innerHTML = 
+        [...result.docs].map(d=>`• ${d.data().title || "Untitled Chat"}`).join("<br>");
+}
+
+// Delete Chats
+window.confirmClear=async()=>{
+    const user = auth.currentUser;
+    if(!user) return showToast("Login required.");
+
+    const chatsRef = collection(db,"chat");
+    const q=query(chatsRef,where("userId","==",user.uid));
+    const result=await getDocs(q);
+
+    lastDeleted=[];
+
+    result.forEach(d=>{
+        lastDeleted.push({id:d.id,data:d.data()});
+        deleteDoc(doc(db,"chat",d.id));
+    });
+
+    showToast("Chat history cleared. Undo available.");
+    document.getElementById("chatList").innerHTML="No conversations.";
+    closeModal();
+};
+
+// Export Chats
+window.exportData=async()=>{
+    const user=auth.currentUser;
+    if(!user) return showToast("Login required.");
+
+    const q=query(collection(db,"chat"),where("userId","==",user.uid));
+    const r=await getDocs(q);
+
+    if(r.empty) return showToast("Nothing to export.");
+
+    let text="";
+    r.forEach(d=>{ text+=`Chat: ${d.data().title}\n${JSON.stringify(d.data(),null,2)}\n\n`; });
+
+    const file=new Blob([text],{type:"text/plain"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(file);
+    a.download="exported_chats.txt";
+    a.click();
+
+    showToast("Download started.");
+};
+
+onAuthStateChanged(auth,()=>loadChats());
+
+feather.replace();
+</script>
+</body>
+</html>
