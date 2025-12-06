@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIZARYON useradmin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+<style>
+body{background:#111827;color:#f3f4f6;}
+
+/* Modal Background */
+.modal-bg{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+    display:none;justify-content:center;align-items:center;z-index:100;
+}
+
+/* Modal Box */
+.modal{
+    background:#1f2937;padding:25px;border-radius:20px;width:90%;
+    max-width:350px;text-align:center;opacity:0;transform:translateY(30px);
+    transition:.35s ease;
+}
+
+.show{display:flex!important;}
+.popup{opacity:1!important;transform:translateY(0)!important;}
+
+/* Animated Error Message */
+.error-box{
+    background:#2d0000;border-left:5px solid red;
+    color:#ff6b6b;padding:8px;border-radius:8px;display:none;
+    animation:fadeIn .3s ease;
+}
+
+@keyframes fadeIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- PASSWORD MODAL -->
+<div id="passwordModal" class="modal-bg">
+    <div id="modalBox" class="modal">
+
+        <h2 class="text-xl font-semibold text-red-400 mb-3">Change Password</h2>
+
+        <div id="errMsg" class="error-box mb-3"></div>
+
+        <input id="oldPass" class="w-full mb-3 bg-gray-700 p-3 rounded-lg outline-none" type="password" placeholder="Old Password">
+
+        <input id="newPass" class="w-full mb-3 bg-gray-700 p-3 rounded-lg outline-none" type="password" placeholder="New Password">
+
+        <input id="confirmPass" class="w-full mb-4 bg-gray-700 p-3 rounded-lg outline-none" type="password" placeholder="Confirm Password">
+
+        <button onclick="forgotPassword()" class="text-blue-400 hover:text-blue-300 underline mb-4">Forgot Password?</button>
+
+        <div class="flex gap-4">
+            <button onclick="closeModal()" class="flex-1 border border-gray-600 py-2 rounded-lg hover:bg-gray-700 transition">
+                Cancel
+            </button>
+            <button onclick="savePassword()" class="flex-1 bg-red-600 py-2 rounded-lg hover:bg-red-700 transition">
+                Save
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- NAV -->
+<nav class="fixed w-full top-0 px-6 py-3 shadow-md flex justify-between items-center bg-[#1f2937] z-50">
+    <div class="flex items-center gap-3">
+        <i data-feather="user" class="text-red-500"></i>
+        <span class="text-xl font-bold">Account Settings</span>
+    </div>
+
+    <a href="index.html" class="border border-red-600 text-red-400 px-5 py-2 rounded-lg hover:bg-red-900">Back</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<section class="container mx-auto px-6 pt-24 pb-16">
+
+    <div class="text-center mb-10">
+        <div id="profilePic" class="mx-auto bg-gray-600 w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"></div>
+        <h2 id="displayName" class="text-3xl mt-4 font-semibold"></h2>
+        <p id="username" class="text-gray-400"></p>
+
+        <button onclick="window.location.href='edit-profile.html'" class="mt-4 border border-gray-600 px-6 py-2 rounded-lg hover:bg-gray-700 transition">
+            Edit Account
+        </button>
+    </div>
+
+    <div class="space-y-6">
+
+        <div class="bg-[#1f2937] p-4 rounded-xl">
+            <h3 class="text-lg font-semibold mb-3">System</h3>
+
+            <div onclick="openPage('notifications.html')" class="cursor-pointer py-3 flex justify-between text-gray-300 hover:text-white transition">
+                Notifications <i data-feather="bell"></i>
+            </div>
+
+            <div onclick="openPage('data-controls.html')" class="cursor-pointer py-3 flex justify-between text-gray-300 hover:text-white transition">
+                Data Controls <i data-feather="database"></i>
+            </div>
+
+            <div onclick="showModal()" class="cursor-pointer py-3 flex justify-between text-gray-300 hover:text-white transition">
+                Change Password <i data-feather="lock"></i>
+            </div>
+        </div>
+
+        <button onclick="logout()" class="w-full text-red-400 border border-red-600 py-3 rounded-lg hover:bg-red-900 transition">
+            Log Out
+        </button>
+    </div>
+</section>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, updatePassword, sendPasswordResetEmail, reauthenticateWithCredential, EmailAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+  authDomain: "vizaryon-301bd.firebaseapp.com",
+  projectId: "vizaryon-301bd",
+  storageBucket: "vizaryon-301bd.firebasestorage.app",
+  messagingSenderId: "748332923160",
+  appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+
+let user = null;
+
+// Load user data
+onAuthStateChanged(auth, u => {
+    user = u;
+    if(!u) return;
+
+    document.getElementById("displayName").innerText = u.displayName || "User";
+    document.getElementById("username").innerText = u.email;
+    document.getElementById("profilePic").innerText = (u.displayName || "U")[0].toUpperCase();
+});
+
+// Smooth error box
+function showError(msg){
+    const box=document.getElementById("errMsg");
+    box.style.display="block";
+    box.innerText=msg;
+}
+
+// Show modal
+window.showModal = () => {
+    document.getElementById("passwordModal").classList.add("show");
+    setTimeout(() => document.getElementById("modalBox").classList.add("popup"),10);
+};
+
+// Close modal
+window.closeModal = () =>{
+    document.getElementById("modalBox").classList.remove("popup");
+    setTimeout(()=> document.getElementById("passwordModal").classList.remove("show"),250);
+};
+
+// Forgot password
+window.forgotPassword = () =>{
+    sendPasswordResetEmail(auth, user.email);
+    showError("📧 Password reset email sent.");
+};
+
+// Save new password
+window.savePassword = async () => {
+    const oldPass=document.getElementById("oldPass").value;
+    const newPass=document.getElementById("newPass").value;
+    const confirm=document.getElementById("confirmPass").value;
+
+    if(newPass !== confirm) return showError("❌ Passwords do not match.");
+    if(newPass.length < 6) return showError("❌ Minimum 6 characters required.");
+
+    try{
+        const cred = EmailAuthProvider.credential(user.email, oldPass);
+        await reauthenticateWithCredential(user, cred);
+        await updatePassword(user, newPass);
+
+        showError("✔ Password Updated Successfully!");
+        setTimeout(closeModal,1000);
+
+    }catch(err){
+        showError("❌ Incorrect old password.");
+    }
+};
+</script>
+
+<script>
+feather.replace();
+function openPage(p){window.location.href=p;}
+function logout(){window.location.href="index.html";}
+</script>
+
+</body>
+</html>
