@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>VIZARYON - Welcome Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
@@ -17,6 +17,15 @@
         .red-bg { background-color: #dc2626; }
         .dark-gray-bg { background-color: #1f2937; }
         .red-text { color: #dc2626; }
+        /* small profile image styling */
+        .profile-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 2px solid rgba(148,163,184,0.08); /* subtle border */
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -30,45 +39,33 @@
             <span class="text-xl font-bold">VIZARYON</span>
         </div>
 
-        <!-- NAV LINKS -->
         <div class="hidden md:flex items-center space-x-8">
             <a href="#" class="text-gray-300 hover:text-white">Home</a>
             <a href="#features" class="text-gray-300 hover:text-white">Features</a>
             <a href="#about" class="text-gray-300 hover:text-white">About Developer</a>
-
-            <!-- CHAT BUTTON INSTEAD OF SIGNUP -->
-            <a href="chat.html" class="red-bg text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-                Chat
-            </a>
-
-            <!-- USER PROFILE PIC BUTTON -->
-            <img id="navUserPic" 
-                 src="https://www.w3schools.com/howto/img_avatar.png"
-                 class="w-10 h-10 rounded-full cursor-pointer hidden"
-                 onclick="window.location.href='edit_account.html'">
+            <a href="login.html" class="red-bg text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Login</a>
+            <a href="signup.html" class="border border-red-600 text-red-400 px-4 py-2 rounded-lg hover:bg-red-900 transition">Signup</a>
         </div>
 
-        <button class="md:hidden text-white"><i data-feather="menu"></i></button>
+        <!-- >>> REPLACED: hamburger menu removed and replaced with profile circle <<< -->
+        <!-- Profile button (desktop + mobile) -->
+        <a id="profileButton" href="edit_account.html" class="flex items-center focus:outline-none">
+            <img id="profilePic" alt="profile" class="profile-img" src="">
+        </a>
     </div>
 </nav>
 
 <!-- HERO -->
 <section class="container mx-auto px-6 py-20 text-center">
     <div data-aos="fade-up">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6">
-            Experience the Future with <span class="red-text">VIZARYON</span>
-        </h1>
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">Experience the Future with <span class="red-text">VIZARYON</span></h1>
         <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
             The most advanced AI chatbot platform designed to revolutionize your digital interactions.
         </p>
 
         <div class="flex flex-col md:flex-row justify-center gap-4">
-            <a href="chat.html" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">
-                Get Started
-            </a>
-            <a href="sample_chat.html" class="border border-red-600 text-red-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-900 transition">
-                Try Now!
-            </a>
+            <a href="chat.html" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">Start Chat</a>
+            <a href="#aboutdeveloper" class="border border-red-600 text-red-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-900 transition">About Developer</a>
         </div>
     </div>
 </section>
@@ -86,7 +83,7 @@
                     <i data-feather="zap" class="text-white"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3">Lightning Fast</h3>
-                <p class="text-gray-300">Instant responses with zero lag.</p>
+                <p class="text-gray-300">VIZARYON AI delivers instant responses with near-zero delay, giving you smooth, uninterrupted conversations.</p>
             </div>
 
             <div class="bg-gray-800 p-8 rounded-xl" data-aos="fade-up" data-aos-delay="200">
@@ -94,7 +91,7 @@
                     <i data-feather="cpu" class="text-white"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3">Advanced Intelligence</h3>
-                <p class="text-gray-300">Understands context and nuance deeply.</p>
+                <p class="text-gray-300">Powered by cutting-edge AI models, it understands context deeply and produces human-level, meaningful replies.</p>
             </div>
 
             <div class="bg-gray-800 p-8 rounded-xl" data-aos="fade-up" data-aos-delay="300">
@@ -102,7 +99,7 @@
                     <i data-feather="shield" class="text-white"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3">Secure & Private</h3>
-                <p class="text-gray-300">Encrypted conversations. 100% safe.</p>
+                <p class="text-gray-300">Your chats are encrypted and protected with industry-grade security, ensuring complete safety and privacy.</p>
             </div>
         </div>
     </div>
@@ -113,27 +110,39 @@
     <div class="container mx-auto px-6">
         <div class="flex flex-col md:flex-row items-center gap-10">
             
+            <!-- Image -->
             <div class="md:w-1/2" data-aos="fade-right">
-                <img src="http://static.photos/technology/640x360/42" 
-                     alt="Developer" 
-                     class="rounded-xl shadow-2xl">
+                <img src="http://static.photos/technology/640x360/149" alt="Developer" class="rounded-xl shadow-2xl">
             </div>
 
+            <!-- Text -->
             <div class="md:w-1/2" data-aos="fade-left">
                 <h2 class="text-3xl md:text-4xl font-bold mb-6">About The Developer</h2>
 
-                <p class="text-gray-300 mb-6">
-                    Saiikoh is a 13-year-old website & AI developer from India.
-                </p>
+                <p class="text-gray-300 mb-6">Saiikoh is a 13-year-old website & AI developer from India (Uttar Pradesh). Passionate about coding, technology, and AI.</p>
 
-                <p class="text-gray-300 mb-8">
-                    He has mastered multiple programming languages and frameworks at a young age.
-                </p>
+                <p class="text-gray-300 mb-8">He has mastered multiple programming languages and frameworks already at a young age.</p>
 
                 <div class="flex flex-wrap gap-4">
-                    <a href="https://youtube.com/@isaiikon" class="red-bg px-4 py-2 rounded-lg text-white">YouTube</a>
-                    <a href="https://www.instagram.com/isaiikoh" class="red-bg px-4 py-2 rounded-lg text-white">Instagram</a>
-                    <a href="mailto:thesaiikoh@gmail.com" class="red-bg px-4 py-2 rounded-lg text-white">Email</a>
+
+                    <!-- YOUTUBE -->
+                    <a href="https://youtube.com/@isaiikon?si=GkOaMdoerlrJ3cbL" 
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's YouTube
+                    </a>
+
+                    <!-- INSTAGRAM -->
+                    <a href="https://www.instagram.com/isaiikoh?igsh=MzNhZmtudzMxeGNx"
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's Instagram
+                    </a>
+
+                    <!-- EMAIL -->
+                    <a href="mailto:thesaiikoh@gmail.com"
+                       class="red-bg px-4 py-2 rounded-lg text-white">
+                       Saiikoh's Personal Email
+                    </a>
+
                 </div>
             </div>
         </div>
@@ -143,17 +152,12 @@
 <!-- CTA -->
 <section class="dark-gray-bg py-20">
     <div class="container mx-auto px-6 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">
-            Ready to Experience <span class="red-text">VIZARYON</span> AI?
-        </h2>
-        <p class="text-xl text-gray-300 mb-10" data-aos="fade-up" data-aos-delay="100">
-            Join thousands of users using VIZARYON AI.
-        </p>
+        <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">Ready to Experience <span class="red-text">VIZARYON</span> AI?</h2>
+        <p class="text-xl text-gray-300 mb-10" data-aos="fade-up" data-aos-delay="100">Join thousands of users using VIZARYON AI.</p>
 
         <div class="flex flex-col md:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
-            <a href="chat.html" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">
-                Chat Now
-            </a>
+            <a href="chat.html" class="red-bg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 transition">Chat</a>
+            <a href="edit_account.html" class="border border-red-600 text-red-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-900 transition">Edit Account</a>
         </div>
     </div>
 </section>
@@ -169,9 +173,9 @@
             </div>
 
             <div class="flex space-x-6">
-                <a href="#" class="text-gray-400 hover:text-white"><i data-feather="instagram"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white"><i data-feather="youtube"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white"><i data-feather="mail"></i></a>
+                <a href="https://www.instagram.com/vizaryon.ai?igsh=eHJhbG9vaTl0Nmwx" class="text-gray-400 hover:text-white"><i data-feather="instagram"></i></a>
+                <a href="https://youtube.com/@vizaryonai?si=W14IOTwn4n2U55tS" class="text-gray-400 hover:text-white"><i data-feather="youtube"></i></a>
+                <a href="mailto:vizaryonai@gmail.com" class="text-gray-400 hover:text-white"><i data-feather="mail"></i></a>
             </div>
         </div>
 
@@ -187,40 +191,37 @@
     </div>
 </footer>
 
-<!-- FIREBASE AUTH FOR NAVBAR -->
-<script type="module">
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
-        authDomain: "vizaryon-301bd.firebaseapp.com",
-        projectId: "vizaryon-301bd",
-        storageBucket: "vizaryon-301bd.firebasestorage.app",
-        messagingSenderId: "748332923160",
-        appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const pic = document.getElementById("navUserPic");
-
-    onAuthStateChanged(auth, user => {
-        if (user) {
-            pic.src = user.photoURL || "https://www.w3schools.com/howto/img_avatar.png";
-            pic.classList.remove("hidden");
-        } else {
-            pic.classList.add("hidden");
-        }
-    });
-
-</script>
-
 <script>
+    // initialize icons + AOS as before
     AOS.init();
     feather.replace();
+
+    // Try to load the user's profile photo from localStorage.
+    // If you use Firebase Auth, set localStorage.setItem('userPhoto', user.photoURL) on login.
+    (function setProfileImage(){
+        const img = document.getElementById('profilePic');
+        // fallback SVG avatar (data URI)
+        const fallbackSVG = encodeURIComponent(
+            `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='1' y='1' width='22' height='22' rx='4' ry='4' fill='%231f2937' /><circle cx='12' cy='9' r='3' fill='%23dc2626'/><path d='M6 19c1.333-2 3-3 6-3s4.667 1 6 3' stroke='%23ffffff' /></svg>`
+        );
+        const fallback = `data:image/svg+xml;charset=utf8,${fallbackSVG}`;
+
+        try {
+            const stored = localStorage.getItem('userPhoto');
+            if (stored && stored.length) {
+                img.src = stored;
+            } else {
+                img.src = fallback;
+            }
+        } catch (e) {
+            img.src = fallback;
+        }
+
+        // accessibility & click behavior (ensures opening edit_account.html)
+        const profileButton = document.getElementById('profileButton');
+        profileButton.setAttribute('title', 'Edit account');
+        // profile button already points to edit_account.html (link). No JS navigation required.
+    })();
 </script>
 
 </body>
