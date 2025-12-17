@@ -19,20 +19,9 @@
         }
         .delete-toast { border-color: #dc2626; color: #dc2626; }
 
-        .modal-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); display: none; justify-content: center;
-            align-items: center; z-index: 50;
-        }
-
-        .modal {
-            background:#1f2937; padding:25px; width:90%; max-width:380px;
-            border-radius:10px; text-align:center;
-        }
-
-        input, textarea { 
-            background-color: #1f2937; 
-            border: 1px solid #374151; 
+        input, textarea {
+            background-color: #1f2937;
+            border: 1px solid #374151;
         }
         input:focus, textarea:focus { border-color: #dc2626; outline: none; }
     </style>
@@ -40,71 +29,162 @@
 
 <body class="min-h-screen px-6">
 
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
 
-    <!-- Delete Modal Step 1 -->
-    <div id="deleteModal1" class="modal-bg">
-        <div class="modal">
-            <h2 class="text-xl font-bold mb-3 text-red-400">Delete Account?</h2>
-            <p class="text-gray-300 mb-6">This action cannot be undone.</p>
+<nav class="fixed top-0 left-0 w-full shadow-md px-6 py-4 flex justify-between items-center z-50">
+    <div class="flex items-center space-x-3">
+        <i data-feather="edit-3" class="red-text"></i>
+        <span class="text-xl font-bold">Edit Account</span>
+    </div>
+    <button onclick="window.location.href='settings.html'"
+        class="border border-red-600 text-red-400 px-5 py-2 rounded-lg hover:bg-red-900 transition">
+        Back
+    </button>
+</nav>
 
-            <div class="flex space-x-4">
-                <button onclick="closeModals()" class="flex-1 border border-gray-500 py-2 rounded-lg hover:bg-gray-700">Cancel</button>
-                <button onclick="stepTwoDelete()" class="flex-1 red-bg py-2 rounded-lg hover:bg-red-700">Continue</button>
-            </div>
+<section class="container mx-auto pt-28 max-w-xl">
+
+    <div class="text-center mb-10">
+        <div id="profilePreview"
+             class="mx-auto bg-gray-600 w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold overflow-hidden">
+            👤
         </div>
+        <input type="file" id="fileInput" accept="image/*" class="hidden">
+        <button onclick="document.getElementById('fileInput').click()"
+            class="mt-4 border border-gray-600 px-5 py-2 rounded-lg hover:bg-gray-700 transition">
+            Change Profile Picture
+        </button>
     </div>
 
-    <!-- Delete Modal Step 2 -->
-    <div id="deleteModal2" class="modal-bg">
-        <div class="modal">
-            <h2 class="text-lg font-bold mb-3 text-red-400">Confirm Password</h2>
-            <input type="password" id="confirmPassword" placeholder="Enter your password"
-            class="w-full px-4 py-3 rounded-lg mb-5"/>
+    <div class="space-y-6">
 
-            <div class="flex space-x-4">
-                <button onclick="closeModals()" class="flex-1 border border-gray-500 py-2 rounded-lg hover:bg-gray-700">Cancel</button>
-                <button onclick="finalDelete()" class="flex-1 red-bg py-2 rounded-lg hover:bg-red-700">Delete</button>
-            </div>
+        <div>
+            <label class="text-gray-300 text-sm">Display Name</label>
+            <input id="name" type="text" class="w-full px-4 py-3 rounded-lg mt-2">
         </div>
+
+        <div>
+            <label class="text-gray-300 text-sm">Username</label>
+            <input id="username" type="text" maxlength="18"
+                   class="w-full px-4 py-3 rounded-lg mt-2">
+            <p id="usernameWarning" class="text-red-400 text-sm mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="text-gray-300 text-sm">Email</label>
+            <input id="email" type="email" class="w-full px-4 py-3 rounded-lg mt-2">
+        </div>
+
+        <div>
+            <label class="text-gray-300 text-sm">Bio</label>
+            <textarea id="bio"
+                class="w-full px-4 py-3 rounded-lg mt-2 h-28 bg-gray-800 border border-gray-600"></textarea>
+        </div>
+
     </div>
 
-    <!-- Nav -->
-    <nav class="fixed top-0 left-0 w-full shadow-md px-6 py-4 flex justify-between items-center z-50">
-        <div class="flex items-center space-x-3">
-            <i data-feather="edit-3" class="red-text"></i>
-            <span class="text-xl font-bold">Edit Account</span>
-        </div>
-        <button onclick="window.location.href='settings.html'" class="border border-red-600 text-red-400 px-5 py-2 rounded-lg hover:bg-red-900 transition">Back</button>
-    </nav>
+    <button onclick="saveProfile()"
+        class="w-full mt-10 py-3 rounded-lg text-lg font-semibold red-bg hover:bg-red-700 transition">
+        Save Changes
+    </button>
 
-    <!-- Content -->
-    <section class="container mx-auto pt-28 max-w-xl">
+</section>
 
-        <!-- Avatar -->
-        <div class="text-center mb-10">
-            <div id="profilePreview" class="mx-auto bg-gray-600 w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold overflow-hidden">
-                👤
-            </div>
-            <input type="file" id="fileInput" accept="image/*" class="hidden">
-            <button onclick="document.getElementById('fileInput').click()" class="mt-4 border border-gray-600 px-5 py-2 rounded-lg hover:bg-gray-700 transition">Change Profile Picture</button>
-        </div>
+<script>
+feather.replace();
 
-        <!-- Form -->
-        <div class="space-y-6">
-            
-            <div>
-                <label class="text-gray-300 text-sm">Display Name</label>
-                <input id="name" type="text" placeholder="Write your display name here..." class="w-full px-4 py-3 rounded-lg mt-2">
-            </div>
+const nameInput = document.getElementById("name");
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
+const bioInput = document.getElementById("bio");
+const usernameWarning = document.getElementById("usernameWarning");
 
-            <div>
-                <label class="text-gray-300 text-sm">Username</label>
-                <input id="username" type="text" placeholder="Write your username here..." class="w-full px-4 py-3 rounded-lg mt-2">
-            </div>
+/* 🔹 LOAD ACCOUNT DETAILS */
+window.onload = () => {
+    nameInput.value = localStorage.getItem("name") || "";
+    usernameInput.value = localStorage.getItem("username") || "";
+    emailInput.value = localStorage.getItem("email") || "";
+    bioInput.value = localStorage.getItem("bio") || "";
 
-            <div>
+    const img = localStorage.getItem("profilePic");
+    if (img) {
+        profilePreview.innerHTML = `<img src="${img}" class="w-full h-full object-cover rounded-full">`;
+    }
+};
+
+/* 🔹 USERNAME RULES + AUTO LOWERCASE */
+usernameInput.addEventListener("input", () => {
+    let value = usernameInput.value.toLowerCase();
+    usernameInput.value = value;
+
+    if (!/^[a-z0-9_]*$/.test(value)) {
+        showUsernameWarning("The following character is not supported!");
+        return;
+    }
+
+    hideUsernameWarning();
+});
+
+/* 🔹 SAVE PROFILE WITH 14-DAY USERNAME LOCK */
+function saveProfile() {
+    const oldUsername = localStorage.getItem("username");
+    const newUsername = usernameInput.value.trim();
+
+    const lastChange = Number(localStorage.getItem("usernameChangedAt") || 0);
+    const now = Date.now();
+    const DAYS_14 = 14 * 24 * 60 * 60 * 1000;
+
+    if (oldUsername && newUsername !== oldUsername) {
+        if (now - lastChange < DAYS_14) {
+            const daysLeft = Math.ceil((DAYS_14 - (now - lastChange)) / (24*60*60*1000));
+            showUsernameWarning(`You can change username again in ${daysLeft} day(s).`);
+            return;
+        }
+        localStorage.setItem("usernameChangedAt", now);
+    }
+
+    localStorage.setItem("name", nameInput.value);
+    localStorage.setItem("username", newUsername);
+    localStorage.setItem("email", emailInput.value);
+    localStorage.setItem("bio", bioInput.value);
+
+    showToast("Profile Updated Successfully!");
+}
+
+/* 🔹 TOAST */
+function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 2500);
+}
+
+function showUsernameWarning(msg) {
+    usernameWarning.textContent = msg;
+    usernameWarning.classList.remove("hidden");
+}
+
+function hideUsernameWarning() {
+    usernameWarning.classList.add("hidden");
+}
+
+/* 🔹 PROFILE PICTURE */
+document.getElementById("fileInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        localStorage.setItem("profilePic", reader.result);
+        profilePreview.innerHTML =
+            `<img src="${reader.result}" class="w-full h-full object-cover rounded-full">`;
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+
+</body>
+</html>            <div>
                 <label class="text-gray-300 text-sm">Email</label>
                 <input id="email" type="email" placeholder="user@email.com" class="w-full px-4 py-3 rounded-lg mt-2">
             </div>
