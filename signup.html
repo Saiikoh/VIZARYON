@@ -20,138 +20,189 @@
 
 <body class="min-h-screen">
 
-    <!-- NAVBAR -->
-    <nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <i data-feather="user-plus" class="red-text"></i>
-                <span class="text-xl font-bold text-white">VIZARYON</span>
-            </div>
-            <a href="index.html" class="text-gray-300 hover:text-white">Back to Home</a>
+<!-- NAVBAR -->
+<nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <i data-feather="user-plus" class="red-text"></i>
+            <span class="text-xl font-bold text-white">VIZARYON</span>
         </div>
-    </nav>
+        <a href="index.html" class="text-gray-300 hover:text-white">Back to Home</a>
+    </div>
+</nav>
 
-    <!-- FORM -->
-    <section class="container mx-auto px-6 py-20 flex justify-center">
-        <div class="dark-gray-bg p-8 rounded-xl shadow-2xl w-full max-w-md">
+<!-- FORM -->
+<section class="container mx-auto px-6 py-20 flex justify-center">
+    <div class="dark-gray-bg p-8 rounded-xl shadow-2xl w-full max-w-md">
 
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold mb-2">Create Account</h2>
-                <p class="text-gray-400">Join VIZARYON AI today</p>
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold mb-2">Create Account</h2>
+            <p class="text-gray-400">Join VIZARYON AI today</p>
+        </div>
+
+        <p id="errorMsg" class="text-red-500 text-center mb-4 hidden"></p>
+
+        <form id="registerForm">
+
+            <!-- Full Name -->
+            <div class="mb-4">
+                <label class="block text-gray-300 mb-2">Full Name</label>
+                <input id="name" type="text" required placeholder="John Doe"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
             </div>
 
-            <p id="errorMsg" class="text-red-500 text-center mb-4 hidden"></p>
+            <!-- USERNAME -->
+            <div class="mb-4">
+                <label class="block text-gray-300 mb-2">Username</label>
+                <input id="username" type="text" required placeholder="john_doe"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
+                <p id="usernameWarning" class="text-red-500 text-sm mt-1 hidden"></p>
+            </div>
 
-            <form id="registerForm">
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Full Name</label>
-                    <input id="name" type="text" required placeholder="John Doe"
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
-                </div>
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block text-gray-300 mb-2">Email Address</label>
+                <input id="email" type="email" required placeholder="your@email.com"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
+            </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Email Address</label>
-                    <input id="email" type="email" required placeholder="your@email.com"
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
-                </div>
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="block text-gray-300 mb-2">Password</label>
+                <input id="password" type="password" required placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
+            </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Password</label>
-                    <input id="password" type="password" required placeholder="••••••••"
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
-                </div>
+            <!-- Confirm -->
+            <div class="mb-6">
+                <label class="block text-gray-300 mb-2">Confirm Password</label>
+                <input id="confirm-password" type="password" required placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
+            </div>
 
-                <div class="mb-6">
-                    <label class="block text-gray-300 mb-2">Confirm Password</label>
-                    <input id="confirm-password" type="password" required placeholder="••••••••"
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
-                </div>
+            <button id="signupBtn" type="submit"
+                class="red-bg w-full py-3 rounded-lg text-white font-semibold hover:bg-red-700 transition">
+                Create Account
+            </button>
 
-                <button id="signupBtn" type="submit"
-                    class="red-bg w-full py-3 rounded-lg text-white font-semibold hover:bg-red-700 transition">
-                    Create Account
-                </button>
-
-                <p class="text-center text-gray-400 mt-4">
-                    Already have an account?
-                    <a href="login.html" class="text-red-400 hover:text-red-300">Login</a>
-                </p>
-            </form>
-        </div>
-    </section>
+            <p class="text-center text-gray-400 mt-4">
+                Already have an account?
+                <a href="login.html" class="text-red-400 hover:text-red-300">Login</a>
+            </p>
+        </form>
+    </div>
+</section>
 
 <!-- FIREBASE -->
 <script type="module">
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
-        authDomain: "vizaryon-301bd.firebaseapp.com",
-        projectId: "vizaryon-301bd",
-        storageBucket: "vizaryon-301bd.firebasestorage.app",
-        messagingSenderId: "748332923160",
-        appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+    authDomain: "vizaryon-301bd.firebaseapp.com",
+    projectId: "vizaryon-301bd",
+    storageBucket: "vizaryon-301bd.firebasestorage.app",
+    messagingSenderId: "748332923160",
+    appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const form = document.getElementById("registerForm");
-    const errorBox = document.getElementById("errorMsg");
-    const btn = document.getElementById("signupBtn");
+const form = document.getElementById("registerForm");
+const errorBox = document.getElementById("errorMsg");
+const btn = document.getElementById("signupBtn");
+const usernameInput = document.getElementById("username");
+const usernameWarning = document.getElementById("usernameWarning");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+/* ✅ AUTO LOWERCASE + LIVE VALIDATION */
+usernameInput.addEventListener("input", () => {
+    usernameInput.value = usernameInput.value.toLowerCase(); // 🔥 AUTO LOWERCASE
+    let val = usernameInput.value;
 
-        let name = document.getElementById("name").value.trim();
-        let email = document.getElementById("email").value.trim();
-        let password = document.getElementById("password").value;
-        let confirmPassword = document.getElementById("confirm-password").value;
-
-        if (password !== confirmPassword) {
-            showError("Passwords do not match!");
-            return;
-        }
-
-        btn.textContent = "Creating Account...";
-        btn.disabled = true;
-
-        try {
-            const userData = await createUserWithEmailAndPassword(auth, email, password);
-
-            // Store user data in Firestore
-            await setDoc(doc(db, "users", userData.user.uid), {
-                name: name,
-                email: email
-            });
-
-            // Redirect to homepage
-            window.location.href = "homepage.html";
-
-        } catch (error) {
-            let msg = "Signup failed!";
-            if (error.code === "auth/email-already-in-use") msg = "Email already exists!";
-            if (error.code === "auth/invalid-email") msg = "Invalid email format!";
-            if (error.code === "auth/weak-password") msg = "Password should be at least 6 characters!";
-            showError(msg);
-        }
-
-        btn.textContent = "Create Account";
-        btn.disabled = false;
-    });
-
-    function showError(msg) {
-        errorBox.textContent = msg;
-        errorBox.classList.remove("hidden");
+    if (!/^[a-z0-9_]*$/.test(val)) {
+        showUsernameWarning("The following character is not supported!");
+    } else if (val.length > 18) {
+        showUsernameWarning("Username cannot exceed 18 characters!");
+    } else {
+        hideUsernameWarning();
     }
+});
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    let name = document.getElementById("name").value.trim();
+    let username = usernameInput.value.trim();
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirm-password").value;
+
+    if (!/^[a-z0-9_]{1,18}$/.test(username)) {
+        showUsernameWarning("The following character is not supported!");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showError("Passwords do not match!");
+        return;
+    }
+
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+        showUsernameWarning("This username is already in use!");
+        return;
+    }
+
+    btn.textContent = "Creating Account...";
+    btn.disabled = true;
+
+    try {
+        const userData = await createUserWithEmailAndPassword(auth, email, password);
+
+        await setDoc(doc(db, "users", userData.user.uid), {
+            name,
+            username,
+            email
+        });
+
+        window.location.href = "homepage.html";
+
+    } catch (error) {
+        let msg = "Signup failed!";
+        if (error.code === "auth/email-already-in-use") msg = "Email already exists!";
+        if (error.code === "auth/invalid-email") msg = "Invalid email format!";
+        if (error.code === "auth/weak-password") msg = "Password should be at least 6 characters!";
+        showError(msg);
+    }
+
+    btn.textContent = "Create Account";
+    btn.disabled = false;
+});
+
+function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.classList.remove("hidden");
+}
+
+function showUsernameWarning(msg) {
+    usernameWarning.textContent = msg;
+    usernameWarning.classList.remove("hidden");
+}
+
+function hideUsernameWarning() {
+    usernameWarning.classList.add("hidden");
+}
 
 </script>
 
-<script> feather.replace(); </script>
+<script>feather.replace();</script>
 
 </body>
 </html>
