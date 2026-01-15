@@ -1,79 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIZARYON - Chat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIZARYON - Chat</title>
 
-    <style>
-        body { background-color: #111827; color: #f3f4f6; }
-        .red-bg { background-color: #dc2626; }
-        .dark-gray-bg { background-color: #1f2937; }
-        .red-text { color: #dc2626; }
-        .chat-bubble { border-radius: 20px; max-width: 80%; }
-        .user-bubble { background-color: #dc2626; color: white; margin-left: auto; }
-        .ai-bubble { background-color: #374151; color: white; margin-right: auto; }
-        .chat-container { height: calc(100vh - 260px); }
-    </style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+
+<style>
+body { background-color:#111827; color:#f3f4f6; }
+.red-bg { background:#dc2626; }
+.dark-gray-bg { background:#1f2937; }
+.red-text { color:#dc2626; }
+.chat-bubble { border-radius:20px; max-width:80%; }
+.user-bubble { background:#dc2626; color:white; margin-left:auto; }
+.ai-bubble { background:#374151; color:white; margin-right:auto; }
+.chat-container { height:calc(100vh - 260px); overflow-y:auto; }
+</style>
 </head>
+
 <body class="min-h-screen">
 
-    <!-- Navigation -->
-    <nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            
-            <div class="flex items-center space-x-4">
-                <i data-feather="message-square" class="red-text"></i>
-                <span class="text-xl font-bold text-white">VIZARYON</span>
-            </div>
-
-            <div class="flex items-center space-x-4">
-                <button onclick="window.location.href='settings.html'" class="text-gray-300 hover:text-white">
-                    <i data-feather="settings"></i>
-                </button>
-                <button onclick="logout()" class="text-gray-300 hover:text-white">
-                    <i data-feather="log-out"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Chat Container -->
-    <div class="container mx-auto px-6 py-4">
-        <div class="chat-container overflow-y-auto mb-4">
-            <div class="flex flex-col space-y-4" id="chatContent"></div>
-        </div>
-
-        <!-- Input -->
-        <div class="dark-gray-bg rounded-lg p-4 shadow-lg">
-            <div class="flex items-center">
-                <input id="messageInput" type="text" placeholder="Type your message here..."
-                class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
-                <button id="sendBtn" class="red-bg ml-4 p-3 rounded-lg hover:bg-red-700 transition">
-                    <i data-feather="send" class="text-white"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Disclaimer Text -->
-        <p class="text-center text-gray-400 text-sm mt-2">
-            VIZARYON ai may produce inaccurate information.
-        </p>
-
+<!-- NAV -->
+<nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <i data-feather="message-square" class="red-text"></i>
+      <span class="text-xl font-bold">VIZARYON</span>
     </div>
+    <div class="flex items-center space-x-4">
+      <button onclick="location.href='admin.html'"><i data-feather="settings"></i></button>
+      <button onclick="location.href='homepage.html'"><i data-feather="log-out"></i></button>
+    </div>
+  </div>
+</nav>
+
+<!-- CHAT -->
+<div class="container mx-auto px-6 py-4">
+  <div class="chat-container mb-4" id="chatContainer">
+    <div id="chatContent" class="flex flex-col space-y-4"></div>
+  </div>
+
+  <div class="dark-gray-bg rounded-lg p-4 shadow-lg flex">
+    <input id="messageInput" type="text" placeholder="Type your message..."
+      class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-red-600 outline-none">
+    <button id="sendBtn" class="red-bg ml-4 p-3 rounded-lg hover:bg-red-700">
+      <i data-feather="send"></i>
+    </button>
+  </div>
+
+  <p class="text-center text-gray-400 text-sm mt-2">
+    VIZARYON ai may produce inaccurate information.
+  </p>
+</div>
 
 <script type="module">
 feather.replace();
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { 
-    getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot
+import {
+  getFirestore, collection, addDoc, serverTimestamp,
+  query, orderBy, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+/* ---------------- FIREBASE ---------------- */
 const firebaseConfig = {
-  apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+  apiKey: "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",
   authDomain: "vizaryon-301bd.firebaseapp.com",
   projectId: "vizaryon-301bd",
   storageBucket: "vizaryon-301bd.firebasestorage.app",
@@ -84,87 +77,83 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const API_URL = "https://api.openai.com/v1/chat/completions";
-const API_KEY = "⚠️ Replace with your API key ⚠️";
-const MODEL = "gpt-4o-mini";
+/* ---------------- OPENROUTER ---------------- */
+const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const API_KEY = "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";
+const MODEL = "meta-llama/llama-3.3-70b-instruct:free";
 
-const sendBtn = document.getElementById("sendBtn");
-const input = document.getElementById("messageInput");
+/* ---------------- UI ---------------- */
 const chatContent = document.getElementById("chatContent");
+const chatContainer = document.getElementById("chatContainer");
+const input = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
-// Send message
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keydown", e => { if(e.key === "Enter") sendMessage(); });
+sendBtn.onclick = sendMessage;
+input.onkeydown = e => e.key === "Enter" && sendMessage();
 
+/* ---------------- FUNCTIONS ---------------- */
 async function sendMessage() {
-    const message = input.value.trim();
-    if (!message) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = "";
 
-    input.value = "";
-    await saveMessage("user", message);
+  displayMessage("user", msg);
+  await saveMessage("user", msg);
 
-    const reply = await getAIResponse(message);
-    await saveMessage("ai", reply);
-}
-
-async function saveMessage(type, text) {
-    await addDoc(collection(db, "messages"), {
-        type,
-        text,
-        timestamp: serverTimestamp()
-    });
-}
-
-function displayMessage(type, text) {
-    const bubble = document.createElement("div");
-    bubble.className = `${type === "user" ? "user-bubble" : "ai-bubble"} chat-bubble p-4 w-3/4`;
-    bubble.innerHTML = type === "ai" 
-        ? `<div class="flex items-center mb-2"><div class="red-bg p-2 rounded-full mr-2"><i data-feather="cpu" class="text-white"></i></div><span class="font-bold">VIZARYON ai</span></div><p>${text}</p>`
-        : `<p>${text}</p>`;
-    
-    chatContent.appendChild(bubble);
-    feather.replace();
-    scrollChat();
+  const reply = await getAIResponse(msg);
+  displayMessage("ai", reply);
+  await saveMessage("ai", reply);
 }
 
 async function getAIResponse(msg) {
-    try {
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${API_KEY}`
-            },
-            body: JSON.stringify({ 
-                model: MODEL, 
-                messages: [{ role: "user", content: msg }]
-            })
-        });
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`,
+        "HTTP-Referer": location.origin,
+        "X-Title": "VIZARYON"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: "user", content: msg }]
+      })
+    });
 
-        const json = await res.json();
-        return json.choices?.[0]?.message?.content || "⚠️ AI error.";
-        
-    } catch {
-        return "⚠️ Network error.";
-    }
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || "⚠️ No response.";
+  } catch (e) {
+    return "⚠️ Network error.";
+  }
 }
 
-function scrollChat() {
-    const container = document.querySelector(".chat-container");
-    container.scrollTop = container.scrollHeight;
+function displayMessage(type, text) {
+  const bubble = document.createElement("div");
+  bubble.className = `${type === "user" ? "user-bubble" : "ai-bubble"} chat-bubble p-4 w-3/4`;
+  bubble.innerHTML = type === "ai"
+    ? `<div class="flex items-center mb-2">
+         <div class="red-bg p-2 rounded-full mr-2"><i data-feather="cpu"></i></div>
+         <b>VIZARYON ai</b>
+       </div><p>${text}</p>`
+    : `<p>${text}</p>`;
+  chatContent.appendChild(bubble);
+  feather.replace();
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Load messages realtime
+async function saveMessage(type, text) {
+  await addDoc(collection(db, "messages"), {
+    type, text, timestamp: serverTimestamp()
+  });
+}
+
+/* ---------------- REALTIME ---------------- */
 const q = query(collection(db, "messages"), orderBy("timestamp"));
-onSnapshot(q, snapshot => {
-    chatContent.innerHTML = "";
-    snapshot.forEach(doc => displayMessage(doc.data().type, doc.data().text));
+onSnapshot(q, snap => {
+  chatContent.innerHTML = "";
+  snap.forEach(d => displayMessage(d.data().type, d.data().text));
 });
-
-// Logout placeholder
-function logout() {
-    alert("Logout system coming soon.");
-}
 </script>
 </body>
 </html>
