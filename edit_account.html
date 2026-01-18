@@ -184,6 +184,86 @@ document.getElementById("fileInput").addEventListener("change", function () {
 </script>
 
 </body>
+</html>    bioInput.value = localStorage.getItem("bio") || "";
+
+    const img = localStorage.getItem("profilePic");
+    if (img) {
+        profilePreview.innerHTML = `<img src="${img}" class="w-full h-full object-cover rounded-full">`;
+    }
+};
+
+/* 🔹 USERNAME RULES + AUTO LOWERCASE */
+usernameInput.addEventListener("input", () => {
+    let value = usernameInput.value.toLowerCase();
+    usernameInput.value = value;
+
+    if (!/^[a-z0-9_]*$/.test(value)) {
+        showUsernameWarning("The following character is not supported!");
+        return;
+    }
+
+    hideUsernameWarning();
+});
+
+/* 🔹 SAVE PROFILE WITH 14-DAY USERNAME LOCK */
+function saveProfile() {
+    const oldUsername = localStorage.getItem("username");
+    const newUsername = usernameInput.value.trim();
+
+    const lastChange = Number(localStorage.getItem("usernameChangedAt") || 0);
+    const now = Date.now();
+    const DAYS_14 = 14 * 24 * 60 * 60 * 1000;
+
+    if (oldUsername && newUsername !== oldUsername) {
+        if (now - lastChange < DAYS_14) {
+            const daysLeft = Math.ceil((DAYS_14 - (now - lastChange)) / (24*60*60*1000));
+            showUsernameWarning(`You can change username again in ${daysLeft} day(s).`);
+            return;
+        }
+        localStorage.setItem("usernameChangedAt", now);
+    }
+
+    localStorage.setItem("name", nameInput.value);
+    localStorage.setItem("username", newUsername);
+    localStorage.setItem("email", emailInput.value);
+    localStorage.setItem("bio", bioInput.value);
+
+    showToast("Profile Updated Successfully!");
+}
+
+/* 🔹 TOAST */
+function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 2500);
+}
+
+function showUsernameWarning(msg) {
+    usernameWarning.textContent = msg;
+    usernameWarning.classList.remove("hidden");
+}
+
+function hideUsernameWarning() {
+    usernameWarning.classList.add("hidden");
+}
+
+/* 🔹 PROFILE PICTURE */
+document.getElementById("fileInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        localStorage.setItem("profilePic", reader.result);
+        profilePreview.innerHTML =
+            `<img src="${reader.result}" class="w-full h-full object-cover rounded-full">`;
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+
+</body>
 </html>            <div>
                 <label class="text-gray-300 text-sm">Email</label>
                 <input id="email" type="email" placeholder="user@email.com" class="w-full px-4 py-3 rounded-lg mt-2">
