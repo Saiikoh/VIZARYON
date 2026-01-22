@@ -16,7 +16,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAUXgsSYWudulsBHeXeZUNsJ6nPLKfNqVc",
+  apiKey: "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",
   authDomain: "vizaryon-301bd.firebaseapp.com",
   projectId: "vizaryon-301bd",
   storageBucket: "vizaryon-301bd.firebasestorage.app",
