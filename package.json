@@ -1,0 +1,9 @@
+{
+  "name": "vizaryon-chat",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  }
+}
