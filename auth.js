@@ -11,12 +11,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "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",
+  authDomain: "vizaryon-301bd.firebaseapp.com",
+  projectId: "vizaryon-301bd",
+  storageBucket: "vizaryon-301bd.firebasestorage.app",
+  messagingSenderId: "748332923160",
+  appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
 };
 
 // Initialize Firebase
