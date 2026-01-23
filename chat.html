@@ -14,118 +14,78 @@ body { background:#111827; color:#f3f4f6; }
 .dark-gray-bg { background:#1f2937; }
 .red-text { color:#dc2626; }
 
-.chat-container {
-  height: calc(100vh - 260px);
-  overflow-y: auto;
-}
-
-.chat-bubble {
-  border-radius: 20px;
-  max-width: 80%;
-}
-
-.user-bubble {
-  background: #dc2626;
-  color: white;
-  margin-left: auto;
-}
-
-.ai-bubble {
-  background: #374151;
-  color: white;
-  margin-right: auto;
-}
+.chat-container { height:calc(100vh - 260px); overflow-y:auto; }
+.chat-bubble { border-radius:20px; max-width:80%; }
+.user-bubble { background:#dc2626; color:white; margin-left:auto; }
+.ai-bubble { background:#374151; color:white; margin-right:auto; }
 </style>
 </head>
 
 <body class="min-h-screen">
 
-<!-- NAVBAR -->
-<nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
-  <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <i data-feather="message-square" class="red-text"></i>
-      <span class="text-xl font-bold">VIZARYON</span>
-    </div>
-    <button onclick="location.href='homepage.html'">
-      <i data-feather="log-out"></i>
-    </button>
+<nav class="dark-gray-bg px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center gap-3">
+    <i data-feather="message-square" class="red-text"></i>
+    <span class="text-xl font-bold">VIZARYON</span>
   </div>
 </nav>
 
-<!-- CHAT AREA -->
 <div class="container mx-auto px-6 py-4">
 
   <div id="chatContainer" class="chat-container mb-4">
     <div id="chatContent" class="flex flex-col space-y-4"></div>
   </div>
 
-  <!-- INPUT -->
-  <div class="dark-gray-bg rounded-lg p-4 flex items-center gap-4">
-    <input
-      id="messageInput"
+  <div class="dark-gray-bg rounded-lg p-4 flex gap-4">
+    <input id="messageInput"
       class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none"
-      placeholder="Type your message..."
-      autocomplete="off"
-    />
+      placeholder="Type your message..." />
     <button id="sendBtn" class="red-bg p-3 rounded-lg">
       <i data-feather="send"></i>
     </button>
   </div>
-
-  <p class="text-center text-gray-400 text-sm mt-2">
-    VIZARYON ai may produce inaccurate information.
-  </p>
 
 </div>
 
 <script>
 feather.replace();
 
-const chatContent   = document.getElementById("chatContent");
+const chatContent = document.getElementById("chatContent");
 const chatContainer = document.getElementById("chatContainer");
-const input         = document.getElementById("messageInput");
-const sendBtn       = document.getElementById("sendBtn");
+const input = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
-sendBtn.addEventListener("click", send);
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") send();
-});
+sendBtn.onclick = send;
+input.onkeydown = e => e.key === "Enter" && send();
 
-function addBubble(type, text) {
-  const div = document.createElement("div");
-  div.className =
+function bubble(type, text) {
+  const d = document.createElement("div");
+  d.className =
     (type === "user" ? "user-bubble" : "ai-bubble") +
     " chat-bubble p-4";
-
-  div.innerHTML =
-    type === "ai"
-      ? `<b>VIZARYON ai</b><p class="mt-2 whitespace-pre-wrap">${text}</p>`
-      : `<p class="whitespace-pre-wrap">${text}</p>`;
-
-  chatContent.appendChild(div);
+  d.innerHTML = `<p class="whitespace-pre-wrap">${text}</p>`;
+  chatContent.appendChild(d);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 async function send() {
-  const message = input.value.trim();
-  if (!message) return;
-
+  const msg = input.value.trim();
+  if (!msg) return;
   input.value = "";
-  addBubble("user", message);
+  bubble("user", msg);
 
   try {
-    const res = await fetch("/api/chat", {
+    const r = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message: msg })
     });
 
-    const data = await res.json();
-    addBubble("ai", data.reply || "⚠️ No response");
+    const d = await r.json();
+    bubble("ai", d.reply || "No response");
 
-  } catch (err) {
-    addBubble("ai", "⚠️ Server error. Try again.");
+  } catch {
+    bubble("ai", "⚠️ Server error");
   }
 }
 </script>
