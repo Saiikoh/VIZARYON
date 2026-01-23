@@ -3,48 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIZARYON - Chat</title>
+<title>VIZARYON – Chat</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
 
 <style>
-body { background-color:#111827; color:#f3f4f6; }
+body { background:#111827; color:#f3f4f6; }
 .red-bg { background:#dc2626; }
 .dark-gray-bg { background:#1f2937; }
 .red-text { color:#dc2626; }
-.chat-bubble { border-radius:20px; max-width:80%; }
-.user-bubble { background:#dc2626; color:white; margin-left:auto; }
-.ai-bubble { background:#374151; color:white; margin-right:auto; }
-.chat-container { height:calc(100vh - 260px); overflow-y:auto; }
+
+.chat-container {
+  height: calc(100vh - 260px);
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  border-radius: 20px;
+  max-width: 80%;
+}
+
+.user-bubble {
+  background: #dc2626;
+  color: white;
+  margin-left: auto;
+}
+
+.ai-bubble {
+  background: #374151;
+  color: white;
+  margin-right: auto;
+}
 </style>
 </head>
 
 <body class="min-h-screen">
 
-<!-- NAV -->
+<!-- NAVBAR -->
 <nav class="dark-gray-bg shadow-lg sticky top-0 z-50">
   <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-    <div class="flex items-center space-x-3">
+    <div class="flex items-center gap-3">
       <i data-feather="message-square" class="red-text"></i>
       <span class="text-xl font-bold">VIZARYON</span>
     </div>
-    <div class="flex items-center space-x-4">
-      <button onclick="location.href='homepage.html'"><i data-feather="log-out"></i></button>
-    </div>
+    <button onclick="location.href='homepage.html'">
+      <i data-feather="log-out"></i>
+    </button>
   </div>
 </nav>
 
-<!-- CHAT -->
+<!-- CHAT AREA -->
 <div class="container mx-auto px-6 py-4">
-  <div class="chat-container mb-4" id="chatContainer">
+
+  <div id="chatContainer" class="chat-container mb-4">
     <div id="chatContent" class="flex flex-col space-y-4"></div>
   </div>
 
-  <div class="dark-gray-bg rounded-lg p-4 shadow-lg flex">
-    <input id="messageInput" type="text" placeholder="Type your message..."
-      class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-red-600 outline-none">
-    <button id="sendBtn" class="red-bg ml-4 p-3 rounded-lg hover:bg-red-700">
+  <!-- INPUT -->
+  <div class="dark-gray-bg rounded-lg p-4 flex items-center gap-4">
+    <input
+      id="messageInput"
+      class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none"
+      placeholder="Type your message..."
+      autocomplete="off"
+    />
+    <button id="sendBtn" class="red-bg p-3 rounded-lg">
       <i data-feather="send"></i>
     </button>
   </div>
@@ -52,107 +76,59 @@ body { background-color:#111827; color:#f3f4f6; }
   <p class="text-center text-gray-400 text-sm mt-2">
     VIZARYON ai may produce inaccurate information.
   </p>
+
 </div>
 
-<script type="module">
+<script>
 feather.replace();
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, serverTimestamp,
-  query, orderBy, onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-/* ---------------- FIREBASE ---------------- */
-const firebaseConfig = {
-  apiKey: "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",
-  authDomain: "vizaryon-301bd.firebaseapp.com",
-  projectId: "vizaryon-301bd",
-  storageBucket: "vizaryon-301bd.firebasestorage.app",
-  messagingSenderId: "748332923160",
-  appId: "1:748332923160:web:3d7b7818b7a75265b2066d"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-/* ---------------- OPENROUTER ---------------- */
-const API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const API_KEY = "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";
-const MODEL = "meta-llama/llama-3.3-70b-instruct:free";
-
-/* ---------------- UI ---------------- */
-const chatContent = document.getElementById("chatContent");
+const chatContent   = document.getElementById("chatContent");
 const chatContainer = document.getElementById("chatContainer");
-const input = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
+const input         = document.getElementById("messageInput");
+const sendBtn       = document.getElementById("sendBtn");
 
-sendBtn.onclick = sendMessage;
-input.onkeydown = e => e.key === "Enter" && sendMessage();
+sendBtn.addEventListener("click", send);
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") send();
+});
 
-/* ---------------- FUNCTIONS ---------------- */
-async function sendMessage() {
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = "";
+function addBubble(type, text) {
+  const div = document.createElement("div");
+  div.className =
+    (type === "user" ? "user-bubble" : "ai-bubble") +
+    " chat-bubble p-4";
 
-  displayMessage("user", msg);
-  await saveMessage("user", msg);
+  div.innerHTML =
+    type === "ai"
+      ? `<b>VIZARYON ai</b><p class="mt-2 whitespace-pre-wrap">${text}</p>`
+      : `<p class="whitespace-pre-wrap">${text}</p>`;
 
-  const reply = await getAIResponse(msg);
-  displayMessage("ai", reply);
-  await saveMessage("ai", reply);
-}
-
-async function getAIResponse(msg) {
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${API_KEY}`,
-        "HTTP-Referer": location.origin,
-        "X-Title": "VIZARYON"
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [{ role: "user", content: msg }]
-      })
-    });
-
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || "⚠️ No response.";
-  } catch (e) {
-    return "⚠️ Network error.";
-  }
-}
-
-function displayMessage(type, text) {
-  const bubble = document.createElement("div");
-  bubble.className = `${type === "user" ? "user-bubble" : "ai-bubble"} chat-bubble p-4 w-3/4`;
-  bubble.innerHTML = type === "ai"
-    ? `<div class="flex items-center mb-2">
-         <div class="red-bg p-2 rounded-full mr-2"><i data-feather="cpu"></i></div>
-         <b>VIZARYON ai</b>
-       </div><p>${text}</p>`
-    : `<p>${text}</p>`;
-  chatContent.appendChild(bubble);
-  feather.replace();
+  chatContent.appendChild(div);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-async function saveMessage(type, text) {
-  await addDoc(collection(db, "messages"), {
-    type, text, timestamp: serverTimestamp()
-  });
-}
+async function send() {
+  const message = input.value.trim();
+  if (!message) return;
 
-/* ---------------- REALTIME ---------------- */
-const q = query(collection(db, "messages"), orderBy("timestamp"));
-onSnapshot(q, snap => {
-  chatContent.innerHTML = "";
-  snap.forEach(d => displayMessage(d.data().type, d.data().text));
-});
+  input.value = "";
+  addBubble("user", message);
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await res.json();
+    addBubble("ai", data.reply || "⚠️ No response");
+
+  } catch (err) {
+    addBubble("ai", "⚠️ Server error. Try again.");
+  }
+}
 </script>
+
 </body>
 </html>
