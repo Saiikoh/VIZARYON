@@ -1,28 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>VIZARYON – Chat</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
 
 <style>
-body { background:#111827; color:#f3f4f6; }
-.red-bg { background:#dc2626; }
-.dark-gray-bg { background:#1f2937; }
-.red-text { color:#dc2626; }
+body {
+  background: #111827;
+  color: #f3f4f6;
+}
 
-.chat-container { height:calc(100vh - 260px); overflow-y:auto; }
-.chat-bubble { border-radius:20px; max-width:80%; }
-.user-bubble { background:#dc2626; color:white; margin-left:auto; }
-.ai-bubble { background:#374151; color:white; margin-right:auto; }
+.red-bg {
+  background: #dc2626;
+}
+
+.dark-gray-bg {
+  background: #1f2937;
+}
+
+.red-text {
+  color: #dc2626;
+}
+
+.chat-container {
+  height: calc(100vh - 260px);
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  border-radius: 20px;
+  max-width: 80%;
+}
+
+.user-bubble {
+  background: #dc2626;
+  color: white;
+  margin-left: auto;
+}
+
+.ai-bubble {
+  background: #374151;
+  color: white;
+  margin-right: auto;
+}
 </style>
 </head>
 
 <body class="min-h-screen">
 
+<!-- Navbar -->
 <nav class="dark-gray-bg px-6 py-4 flex justify-between items-center">
   <div class="flex items-center gap-3">
     <i data-feather="message-square" class="red-text"></i>
@@ -30,19 +61,36 @@ body { background:#111827; color:#f3f4f6; }
   </div>
 </nav>
 
+<!-- Main Container -->
 <div class="container mx-auto px-6 py-4">
 
+  <!-- Chat Messages -->
   <div id="chatContainer" class="chat-container mb-4">
     <div id="chatContent" class="flex flex-col space-y-4"></div>
   </div>
 
-  <div class="dark-gray-bg rounded-lg p-4 flex gap-4">
-    <input id="messageInput"
-      class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none"
-      placeholder="Type your message..." />
-    <button id="sendBtn" class="red-bg p-3 rounded-lg">
-      <i data-feather="send"></i>
-    </button>
+  <!-- Chat Input Area -->
+  <div>
+    
+    <div class="dark-gray-bg rounded-lg p-4 flex gap-4">
+      
+      <input
+        id="messageInput"
+        class="flex-grow px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none"
+        placeholder="Type your message..."
+      />
+
+      <button id="sendBtn" class="red-bg p-3 rounded-lg">
+        <i data-feather="send"></i>
+      </button>
+
+    </div>
+
+    <!-- Disclaimer Text -->
+    <p class="text-gray-400 text-sm text-center mt-3">
+      VIZARYON AI can make mistakes
+    </p>
+
   </div>
 
 </div>
@@ -56,32 +104,51 @@ const input = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 
 sendBtn.onclick = send;
-input.onkeydown = e => e.key === "Enter" && send();
+
+input.onkeydown = (e) => {
+  if (e.key === "Enter") {
+    send();
+  }
+};
 
 function bubble(type, text) {
   const d = document.createElement("div");
+
   d.className =
     (type === "user" ? "user-bubble" : "ai-bubble") +
     " chat-bubble p-4";
-  d.innerHTML = `<p class="whitespace-pre-wrap">${text}</p>`;
+
+  d.innerHTML = `
+    <p class="whitespace-pre-wrap">${text}</p>
+  `;
+
   chatContent.appendChild(d);
+
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 async function send() {
   const msg = input.value.trim();
+
   if (!msg) return;
+
   input.value = "";
+
   bubble("user", msg);
 
   try {
     const r = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: msg })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: msg
+      })
     });
 
     const d = await r.json();
+
     bubble("ai", d.reply || "No response");
 
   } catch {
